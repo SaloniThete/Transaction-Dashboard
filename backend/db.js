@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 
-// Create a Sequelize instance and connect to the MySQL database
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -11,7 +10,6 @@ const sequelize = new Sequelize(
   }
 );
 
-// Test the connection
 sequelize.authenticate()
   .then(() => {
     console.log('Database connection established.');
@@ -20,5 +18,4 @@ sequelize.authenticate()
     console.error('Unable to connect to the database:', error);
   });
 
-// Export the sequelize instance to be used in models
 module.exports = sequelize;

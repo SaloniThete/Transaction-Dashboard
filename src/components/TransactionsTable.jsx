@@ -3,18 +3,27 @@ import { useState, useEffect } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
-const TransactionsTable = ({ search, setSearch, fetchNext, fetchPrev, page, totalPages }) => {
-  const [selectedMonth, setSelectedMonth] = useState('March');
+const TransactionsTable = ({ }) => {
+  const [selectedMonth, setSelectedMonth] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [totalPagesState, setTotalPagesState] = useState(0);  // State for total pages
+  const [page, setPage] = useState(1);
+  const [totalPagesState, setTotalPagesState] = useState(0);  
+  const [search, setSearch] = useState('');
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
 
-
+  const fetchPrev = () => {
+    setPage((prev) => Math.max(prev - 1, 1));
+  };
+  
+  const fetchNext = () => {
+    setPage((prev) => prev + 1);
+  };
+  
   
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -31,8 +40,8 @@ const TransactionsTable = ({ search, setSearch, fetchNext, fetchPrev, page, tota
 
         const { transactions, totalPages } = response.data;
 console.log('response---------->',response.data)
-        setTransactions(transactions); // Set transactions data
-        setTotalPagesState(totalPages); // Set the total pages
+        setTransactions(transactions); 
+        setTotalPagesState(totalPages); 
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -44,7 +53,7 @@ console.log('response---------->',response.data)
   }, [selectedMonth, search, page]);
 
   return (
-    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f3f8fc', marginLeft: 60 }}>
+    <Box sx={{ textAlign: 'center', p: 2, bgcolor: '#f3f8fc',  }}>
       <h2 style={{ marginBottom: '16px', color: '#333' }}>Transaction Dashboard</h2>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -81,11 +90,9 @@ console.log('response---------->',response.data)
         </FormControl>
       </Box>
 
-      {/* Loading or Error Handling */}
       {loading && <CircularProgress />}
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Displaying the transactions in a table */}
       <TableContainer component={Paper} sx={{ bgcolor: '#ffd966', borderRadius: 2 }}>
         <Table>
           <TableHead>
@@ -126,7 +133,7 @@ console.log('response---------->',response.data)
         >
           Previous
         </Button>
-        <span>Page {page} / {totalPagesState}</span>
+        <span> {page} / {totalPagesState}</span>
         <Button
           onClick={fetchNext}
           variant="outlined"
